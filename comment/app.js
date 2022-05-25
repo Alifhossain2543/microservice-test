@@ -24,6 +24,7 @@ app.post("/posts/:id/comments", async (req, res) => {
   allComment.push({
     id: id,
     title,
+    status: "pending"
   })
 
    comments[req.params.id] = allComment
@@ -36,6 +37,7 @@ app.post("/posts/:id/comments", async (req, res) => {
         id,
         title,
         postId: req.params.id,
+        status: "pending",
       },
     })
    }catch(err) {
@@ -46,8 +48,33 @@ app.post("/posts/:id/comments", async (req, res) => {
   res.json(allComment)
 })
 
-app.post("/event", (req, res) => {
-  console.log("event recieved: " + req.body.type)
+app.post("/event", async (req, res) => {
+    const event = req.body
+  const { type, data } = event
+
+//   console.log(event)
+
+  if (type == "commentModerated") {
+      const { id, title, postId, status} = data
+
+
+      const allComments = comments[postId]
+
+      const thisComment = allComments.find((comment) => comment.id == id)
+      thisComment.status = status
+
+        await axios.post("http://localhost:4005/event", {
+          type: "commentUpdated",
+          data: {
+            id,
+            title,
+            postId,
+            status
+          },
+        })
+
+  }
+
 
   res.send({})
 })

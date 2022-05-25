@@ -23,10 +23,22 @@ app.post("/event", async (req, res) => {
   }
 
     if (type == "commentCreated") {
-    const { id, title, postId } = data
+    const { id, title, postId, status } = data
     const post = posts[postId]
 
-    post?.comments?.push({id, title})
+    post?.comments?.push({id, title, status})
+
+    }
+
+    if (type == "commentUpdated") {
+      const { id, title, postId, status } = data
+
+      const post = posts[postId]
+    
+       const thisComment = post.comments.find((comment) => comment.id == id)
+       thisComment.status = status
+       thisComment.title = title
+
 
     }
 

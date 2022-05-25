@@ -30,9 +30,9 @@ const Home: NextPage = () => {
         console.log("running")
 
         try {
-          const { data } = await axios.get("http://localhost:4000/posts")
+          const { data } = await axios.get("http://localhost:4002/posts")
+
           setAllPost(data)
-          console.log(data)
         } catch (e) {
           console.log(e)
         }
@@ -67,7 +67,9 @@ const Home: NextPage = () => {
       <div style={{display : "flex", gap: "5px"}} >
         {Object.keys(allPost).length > 0 &&
           Object.values(allPost).map((post : any) => {
-            return <PostCard key={post.id} post={post} />
+            return (
+              <PostCard key={post.id} post={post} allComment={post.comments} />
+            )
           })}
       </div>
     </div>
