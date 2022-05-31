@@ -10,7 +10,7 @@ app.use(bodyParser.json())
 
 app.post("/event", (req, res) => {
     const event = req.body
-        console.log("event recieved: " + req.body.type)
+        console.log("eventt recieved: " + req.body.type)
 
 
     axios.post("http://post-srv-cluster:4000/event", event)

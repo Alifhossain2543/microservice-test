@@ -1,0 +1,62 @@
+apiVersion: skaffold/v2alpha3
+kind : Config
+deploy:
+  kubectl:
+    manifests:
+      - ./infra/k8s/*
+build:
+  local:
+    push: false
+  artifacts:
+    - image: alifhossain/client
+      context: client
+      docker :
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - dest: .
+            src: '**/**'
+    - image: alifhossain/comments
+      context: comment
+      docker :
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - dest: .
+            src: '*.js'
+
+    - image: alifhossain/event-bus
+      context: event-bus
+      docker :
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - dest: .
+            src: '*.js'
+
+    - image: alifhossain/moderation
+      context: moderation
+      docker :
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - dest: .
+            src: '*.js'
+
+    - image: alifhossain/posts
+      context: post
+      docker :
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - dest: .
+            src: '*.js'
+
+    - image: alifhossain/query-hub
+      context: query-hub
+      docker :
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - dest: .
+            src: '*.js'
