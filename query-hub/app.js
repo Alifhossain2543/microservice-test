@@ -15,6 +15,8 @@ app.get("/posts", (req, res) => {
 
 
 app.post("/event", async (req, res) => {
+      console.log("event recieved: " + req.body.type)
+
   const event = req.body
     const {type, data} = event
   if (type == "postCreated")  {

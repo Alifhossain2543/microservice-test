@@ -8,13 +8,15 @@ app.use(cors())
 app.use(bodyParser.json())
 
 
-app.post("/event", async (req, res) => {
+app.post("/event", (req, res) => {
     const event = req.body
+        console.log("event recieved: " + req.body.type)
 
-    await axios.post("http://localhost:4000/event", event)
-    await axios.post("http://localhost:4001/event", event)
-    await axios.post("http://localhost:4002/event", event)
-    await axios.post("http://localhost:4003/event", event)
+
+    axios.post("http://post-srv-cluster:4000/event", event)
+    axios.post("http://comment:4001/event", event)
+    axios.post("http://query-hub:4002/event", event)
+    axios.post("http://moderation:4003/event", event)
 
   res.json("OK")
 })

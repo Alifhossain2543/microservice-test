@@ -10,7 +10,7 @@ const PostCard = ({ key, post, allComment }) => {
   const commentHandler = async () => {
     try {
       const { data } = await axios.post(
-        `http://localhost:4001/posts/${post.id}/comments`,
+        `http://posts.com/posts/${post.id}/comments`,
         {
           title,
         }

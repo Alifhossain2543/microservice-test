@@ -12,7 +12,7 @@ const Home: NextPage = () => {
 
   const postHandler = async () => {
       try {
-        const { data } = await axios.post("http://localhost:4000/posts", {title : postTitle})
+        const { data } = await axios.post("http://posts.com/posts/create", {title : postTitle})
         setPostTitle("")
         console.log(data)
       }catch(e) {
@@ -30,7 +30,7 @@ const Home: NextPage = () => {
         console.log("running")
 
         try {
-          const { data } = await axios.get("http://localhost:4002/posts")
+          const { data } = await axios.get("http://posts.com/posts")
 
           setAllPost(data)
         } catch (e) {
