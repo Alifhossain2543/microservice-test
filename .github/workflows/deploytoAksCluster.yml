@@ -1,0 +1,50 @@
+on: [push]
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    
+    - uses: azure/docker-login@v1
+      with:
+        login-server: ticketings.azurecr.io
+        username: ${{ secrets.acr_ticketings_username }}
+        password: ${{ secrets.acr_ticketings_password }}
+    
+    - name: Build and push image to ACR
+      id: build-image
+      run: |
+        docker build "$GITHUB_WORKSPACE/client" -f  "client/Dockerfile" -t ticketings.azurecr.io/firstcluster:${{ github.sha }} --label dockerfile-path=client/Dockerfile
+        docker push ticketings.azurecr.io/firstcluster:${{ github.sha }}
+    
+    - uses: azure/k8s-set-context@v1
+      with:
+         kubeconfig: ${{ secrets.aks_firstcluster_kubeConfig }}
+      id: login
+    
+    - name: Create namespace
+      run: |
+        namespacePresent=`kubectl get namespace | grep firstclusterb36e | wc -l`
+        if [ $namespacePresent -eq 0 ]
+        then
+            echo `kubectl create namespace firstclusterb36e`
+        fi
+
+    - uses: azure/k8s-create-secret@v1
+      with:
+        namespace: firstclusterb36e
+        container-registry-url: ticketings.azurecr.io
+        container-registry-username: ${{ secrets.acr_ticketings_username }}
+        container-registry-password: ${{ secrets.acr_ticketings_password }}
+        secret-name: firstclusterdockerauth
+       
+    - uses: azure/k8s-deploy@v1.2
+      with:
+        namespace: firstclusterb36e
+        manifests: |
+          manifests/deployment.yml
+          manifests/service.yml
+        images: |
+          ticketings.azurecr.io/firstcluster:${{ github.sha }}
+        imagepullsecrets: |
+          firstclusterdockerauth
