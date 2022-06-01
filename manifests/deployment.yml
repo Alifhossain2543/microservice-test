@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: "firstcluster-396c"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: "firstcluster-396c"
+  template:
+    metadata:
+      labels:
+        app: "firstcluster-396c"
+    spec:
+      containers:
+        - name: "firstcluster-396c"
+          image: "ticketings.azurecr.io/firstcluster"
+          ports:
+          - containerPort: 80
